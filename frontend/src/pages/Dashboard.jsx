@@ -53,6 +53,7 @@ export const Dashboard = () => {
             <li>✅ Password Hashing with bcryptjs</li>
             <li>✅ MongoDB Database Integration</li>
             <li>✅ Automated Welcome Email System</li>
+            <li>✅ Automatically save user data in Excel</li>
             <li>✅ Protected Routes & Endpoints</li>
           </ul>
         </div>
