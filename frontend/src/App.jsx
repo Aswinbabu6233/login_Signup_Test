@@ -8,13 +8,23 @@ import { Dashboard } from './pages/Dashboard';
 import './styles/auth.css';
 
 const ProtectedRoute = ({ children }) => {
-  const { user, loading } = useAuth();
+  const { user, loading, token } = useAuth();
 
   if (loading) {
     return <div className="loading">Loading...</div>;
   }
 
-  return user ? children : <Navigate to="/login" />;
+  // If no token, redirect to login
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // If token exists but user not loaded yet, show loading
+  if (!user) {
+    return <div className="loading">Loading user data...</div>;
+  }
+
+  return children;
 };
 
 function AppContent() {
@@ -32,7 +42,8 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
-        <Route path="/" element={<Navigate to="/dashboard" />} />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </>
   );
