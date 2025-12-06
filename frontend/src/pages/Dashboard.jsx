@@ -11,8 +11,9 @@ export const Dashboard = () => {
       setDownloading(true);
       const token = localStorage.getItem('token');
       
+      // Use MongoDB export endpoint (production-safe)
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/auth/download/users-excel`,
+        `${import.meta.env.VITE_API_URL}/api/auth/export/users-excel`,
         {
           method: 'GET',
           headers: {
@@ -29,13 +30,13 @@ export const Dashboard = () => {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'users_credentials.xlsx';
+      a.download = 'users_data.xlsx';
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
 
-      showToast('✅ Excel file downloaded successfully!', 'success');
+      showToast('✅ Excel file downloaded successfully! (All users from database)', 'success');
     } catch (error) {
       console.error('Download error:', error);
       showToast('❌ Failed to download Excel file', 'error');

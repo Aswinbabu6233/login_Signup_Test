@@ -14,3 +14,7 @@ build/
 *.swp
 *.swo
 *~
+
+# Excel files (user data)
+*.xlsx
+users_credentials.xlsx

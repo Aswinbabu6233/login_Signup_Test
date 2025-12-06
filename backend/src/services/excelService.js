@@ -18,6 +18,11 @@ export const addUserToExcel = async (userData) => {
       workbook = new ExcelJS.Workbook();
       await workbook.xlsx.readFile(EXCEL_FILE_PATH);
       worksheet = workbook.getWorksheet('Users');
+      
+      if (!worksheet) {
+        console.error('❌ Worksheet "Users" not found');
+        throw new Error('Worksheet not found');
+      }
     } else {
       // Create new workbook
       workbook = new ExcelJS.Workbook();
@@ -44,7 +49,7 @@ export const addUserToExcel = async (userData) => {
     }
 
     // Add user data row
-    worksheet.addRow({
+    const newRow = worksheet.addRow({
       userId: userData.userId,
       name: userData.name,
       email: userData.email,
@@ -53,9 +58,13 @@ export const addUserToExcel = async (userData) => {
       status: 'Active',
     });
 
+    // Style data rows
+    newRow.alignment = { horizontal: 'left', vertical: 'center' };
+
     // Save file
     await workbook.xlsx.writeFile(EXCEL_FILE_PATH);
     console.log(`✅ User data saved to Excel: ${EXCEL_FILE_PATH}`);
+    console.log(`📊 User: ${userData.name} (${userData.email})`);
     return true;
   } catch (error) {
     console.error('❌ Excel save error:', error.message);
