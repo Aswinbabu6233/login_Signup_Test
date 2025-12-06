@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { showToast } from '../utils/toast';
 
 export const Navbar = () => {
   const { user, logout } = useAuth();
@@ -8,6 +9,7 @@ export const Navbar = () => {
 
   const handleLogout = () => {
     logout();
+    showToast('👋 Logged out successfully!', 'info');
     navigate('/login');
   };
 
@@ -20,7 +22,10 @@ export const Navbar = () => {
         <div className="navbar-menu">
           {user ? (
             <>
-              <span className="navbar-user">Welcome, {user.name}</span>
+              <div className="navbar-user-info">
+                <span className="navbar-user-avatar">👤</span>
+                <span className="navbar-user-name">{user.name}</span>
+              </div>
               <button onClick={handleLogout} className="btn-logout">
                 Logout
               </button>

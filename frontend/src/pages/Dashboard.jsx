@@ -1,8 +1,48 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { showToast } from '../utils/toast';
 
 export const Dashboard = () => {
   const { user, loading } = useAuth();
+  const [downloading, setDownloading] = useState(false);
+
+  const downloadExcelFile = async () => {
+    try {
+      setDownloading(true);
+      const token = localStorage.getItem('token');
+      
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/download/users-excel`,
+        {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Download failed');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'users_credentials.xlsx';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+
+      showToast('✅ Excel file downloaded successfully!', 'success');
+    } catch (error) {
+      console.error('Download error:', error);
+      showToast('❌ Failed to download Excel file', 'error');
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -56,6 +96,16 @@ export const Dashboard = () => {
             <li>✅ Automatically save user data in Excel</li>
             <li>✅ Protected Routes & Endpoints</li>
           </ul>
+        </div>
+
+        <div className="dashboard-actions">
+          <button 
+            onClick={downloadExcelFile} 
+            disabled={downloading}
+            className="btn-download-excel"
+          >
+            {downloading ? '⏳ Downloading...' : '📥 Download Users Excel'}
+          </button>
         </div>
       </div>
     </div>
