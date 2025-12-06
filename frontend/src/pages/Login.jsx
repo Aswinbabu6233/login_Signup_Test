@@ -4,6 +4,7 @@ import { Input } from '../components/Input';
 import { Button } from '../components/Button';
 import { login as loginAPI } from '../api/auth';
 import { useAuth } from '../context/AuthContext';
+import { showToast } from '../utils/toast';
 
 export const Login = () => {
   const [formData, setFormData] = useState({
@@ -57,10 +58,12 @@ export const Login = () => {
     try {
       const response = await loginAPI(formData);
       login(response.data.token, response.data.user);
+      showToast(`✅ Welcome back, ${response.data.user.name}!`, 'success');
       navigate('/dashboard');
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'Login failed. Please try again.';
       setErrors({ submit: errorMessage });
+      showToast(errorMessage, 'error');
     } finally {
       setLoading(false);
     }

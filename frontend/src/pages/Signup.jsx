@@ -4,6 +4,7 @@ import { Input } from '../components/Input';
 import { Button } from '../components/Button';
 import { signup } from '../api/auth';
 import { useAuth } from '../context/AuthContext';
+import { showToast } from '../utils/toast';
 
 export const Signup = () => {
   const [formData, setFormData] = useState({
@@ -75,6 +76,7 @@ export const Signup = () => {
     try {
       const response = await signup(formData);
       setSuccessMessage('Account created successfully! Redirecting...');
+      showToast('✅ Account created! Email sent to Mailtrap & data saved to Excel', 'success');
       login(response.data.token, response.data.user);
       setTimeout(() => {
         navigate('/dashboard');
@@ -82,6 +84,7 @@ export const Signup = () => {
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'Signup failed. Please try again.';
       setErrors({ submit: errorMessage });
+      showToast(errorMessage, 'error');
     } finally {
       setLoading(false);
     }
